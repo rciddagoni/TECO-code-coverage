@@ -1,0 +1,66 @@
+loading...
+<head>
+
+
+</head>
+<link href="{{url_for('static',filename='styles/bootstrap.min.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='styles/styles.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='styles/bootstrap-dialog.min.css')}}" rel="stylesheet">
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+
+<body class="body-content">
+
+  <div class="headerClass">
+        <p class="regular-paragraph-class">version: {{app_version}}</p>
+        <p class="header-project-name-class">{{project_name}}</p>
+        <a href="javascript:showAbout();"  class="aboutButtonClass">About</a>
+
+   </div>
+   <div class="content">
+    <div class="sesContainer">
+        <p class="sesTitle">Test Sessions</p>   <button id="newTestSessionButton" onclick="startTestSession()" class="newSesButton">Start New</button>
+       
+        <p></p>
+        <p></p>
+
+        <table id="testSessionsTable" class="stripe" cellspacing="0" width="100%">
+            <thead>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Is active</th>
+            <th>Date</th>
+            <th>Coverage</th>
+            </thead>
+            <tbody>
+                {% for s in sessions %}
+                <tr>
+                    <td class="files-table-filename-cell">{{ s.ID }}</td>
+                    <td><a class="hotlink-paragraph-class" href="/report/{{s.ID}}">{{ s.name  }}</a></td>
+                    <td>{{ s.is_active}}</td>
+                    <td>{{ s.date}}</td>
+                    <td>{{s.total_coverage}}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+
+
+
+
+
+
+
+        </div>
+
+   </div>
+
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script type="text/javascript" src="{{url_for('static',filename='scripts/bootstrap.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='scripts/bootstrap-dialog.min.js')}}"></script>
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="{{url_for('static',filename='scripts/tick.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='scripts/main.js')}}"></script>

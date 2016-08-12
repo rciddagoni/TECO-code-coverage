@@ -1,0 +1,125 @@
+
+<head>
+    <link href="{{url_for('static',filename='styles/styles.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='styles/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='styles/bootstrap-dialog.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='styles/codemirror.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+</head>
+
+
+
+<body class="body-content">
+    <div id="liveIndicator" class="live-indicator-header"><button onclick="stopLiveTestSession();" class="stop-session-button">Stop</button><p class="live-indicator-header-text">LIVE</p></div>
+    <div class="section-header"><button onclick="backToDashboard();" class="back-button">Back</button> <p id="totalCoverageHeader" class="section-header-text">Total coverage for all files</p></div> <canvas id="barChart" width="300" height="50"></canvas>
+    <p></p>
+    <p></p>
+    <div class="section-header"><p class="section-header-text">Coverage by file</p></div>
+    <table id="filesCoverageTable" class="stripe" cellspacing="0" width="100%">
+        <thead>
+        <th>Name</th>
+        <th>Executable Count</th>
+        <th>Execution Count</th>
+        <th>Coverage %</th>
+        </thead>
+        <tbody>
+            {% for f in file_details_list %}
+            <tr>
+                <td class="files-table-filename-cell">{{f.filename}}</td>
+                <td>{{f.executable}}</td>
+                <td>{{f.executed}}</td>
+                <td>{{f.percent_executed}}%</td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+    <p></p>
+    <p></p>
+    <div class="section-header"><p class="section-header-text">Covered Routes</p></div>
+
+    <table id="routeCoverageTable" class="stripe" cellspacing="0" width="100%">
+        <thead>
+        <th>Route</th>
+        <th>Visited</th>
+
+        </thead>
+        <tbody>
+            {% for t in covered_routes_list %}
+            <tr>
+                <td>{{t.route}}</td>
+                <td>{{t.visited}}</td>
+
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p></p>
+    <p></p>
+    <div class="section-header"><p class="section-header-text">Covered Modules</p></div>
+
+    <table id="modulesCoverageTable" class="stripe" cellspacing="0" width="100%">
+        <thead>
+        <th>Module</th>
+        <th>Touched by test</th>
+
+        </thead>
+        <tbody>
+            {% for t in covered_modules_list %}
+            <tr>
+                <td>{{t.module}}</td>
+                <td>{{t.visited}}</td>
+
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p></p>
+    <p></p>
+    <div class="section-header"><p class="section-header-text">Test Efficiency</p></div>
+
+    <table id="tcCoverageTable" class="stripe" cellspacing="0" width="100%">
+        <thead>
+        <th>ID</th>
+        <th>Execution Count</th>
+        <th>Coverage %</th>
+        </thead>
+        <tbody>
+            {% for t in tc_coverage_list %}
+            <tr>
+                <td>{{t.test_id}}</td>
+                <td>{{t.total_executed}}</td>
+                <td>{{t.coverage}}</td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+
+        var total_executable ={{ total_executable }};
+        var total_executed={{ total_executed }};
+        var total_executed_percent={{total_coverage_value}}
+        var CURRENT_SESSION_ID={{session_id}}
+    </script>
+</body>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script type="text/javascript" src="{{url_for('static',filename='scripts/bootstrap.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='scripts/Chart.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='scripts/tick.js')}}"></script>
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="{{url_for('static',filename='scripts/bootstrap-dialog.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='scripts/codemirror.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='scripts/javascript.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='scripts/main.js')}}"></script>
+

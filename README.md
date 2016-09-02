@@ -26,6 +26,7 @@ I named it TECO (from 2 words: TEst and COverage)
 - reports are archived
 - automatically injects instrumentation function into JS by using provided REGEX + injects .TS module if you are instrumenting typescript source
 - easily extensible
+- Browser independent
  
 
 # DEMO

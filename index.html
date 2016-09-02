@@ -1,0 +1,405 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Teco test coverage by msporna</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Teco test coverage</h1>
+        <p>Python based test coverage tool for web applications</p>
+
+        <p class="view"><a href="https://github.com/msporna/TECO_test_coverage">View the Project on GitHub <small>msporna/TECO_test_coverage</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/msporna/TECO_test_coverage/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/msporna/TECO_test_coverage/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/msporna/TECO_test_coverage">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="what-is-this" class="anchor" href="#what-is-this" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WHAT IS THIS?</h1>
+
+<p>This is a project I created in my spare time to measure selenium test coverage for web apps. As QA Engineer I currently write automated tests and I needed a tool that instruments javascript and html files. The tool needed to work well with selenium tests (open browser-click through app-close browser).
+There are some code and test coverage tools out there but those are mostly designed for unit tests and I needed one written specifically for QA Engineers that create 
+automated tests. It's Python 2 based.</p>
+
+<p>I created a tool that suits my needs and maybe it will someone else's too.
+I named it TECO (from 2 words: TEst and COverage)</p>
+
+<p>Below is a GIF presenting it in action, left pane is TECO and righ pane is a sample website and I click its buttons. TECO shows coverage in real time.</p>
+
+<p><img src="http://msporna.github.io/public/teco_gif_1.gif.gif" alt="alt tag"></p>
+
+<h1>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>FEATURES</h1>
+
+<ul>
+<li>web based dashboard, written in flask</li>
+<li>API written in flask so it can be easily integrated with any CI tool</li>
+<li>live test coverage</li>
+<li>compatible with automated and manual tests</li>
+<li>measures test coverage for js,ts and html files</li>
+<li>works with Angular2 (Typescript)</li>
+<li>measures visited routes</li>
+<li>measures modules that were touched by the tests</li>
+<li>and finally measures efficiency of each test (how many code lines were executed by each test)</li>
+<li>reports are archived</li>
+<li>automatically injects instrumentation function into JS by using provided REGEX + injects .TS module if you are instrumenting typescript source</li>
+<li>easily extensible</li>
+</ul>
+
+<h1>
+<a id="demo" class="anchor" href="#demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>DEMO</h1>
+
+<p>I recorded a short demo presenting TECO tool in action:
+ <a href="https://youtu.be/xvQJpqtbM0g">TECO coverage tool demo</a></p>
+
+<h1>
+<a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HOW IT WORKS</h1>
+
+<p>It contains javascript file instrument.js that contains instrumentation function. The file is injected into each javascript/typescript/html file specified in config
+and instrumentCode function is injected into each executable line of the source you wish. By design, it is injected into functions but as injection is based on REGEX
+you can inject it anywhere you want or simply paste the instrumentation function manually into your source.</p>
+
+<p>All of the above happens by running instrument2 python script which also registers few things to backend such as files that you want to instrument, routes
+that app has, modules that app has etc.</p>
+
+<p>After this, you create new test session by calling API function or by using 'start new session' button in the dashboard. Test session must be ended manually (via API call
+or UI button) after all of the tests are executed. </p>
+
+<p>After the test session is started, run your tests and each test can, although it's not required, send request to backend with info about current test. Then the test is tied
+to instrumentation data gathered and is useful to view in the report to see test efficiency (if some test touches 0 lines of code, then it's not a good test).</p>
+
+<p>Backend gathers data sent from instrument.js as app code is being triggered by frontend actions performed by the tests. It can be viewed live in the dashboard. 
+InstrumentCode function sits in executable code lines of your app so everytime you do some action on UI, code underneeth is executed along with the instrumentCode function
+that sends that fact to the backend.</p>
+
+<p>When tests are over, test session ends and we have a test coverage report to analyze.</p>
+
+<p><img src="http://msporna.github.io/public/teco_diagram.png" alt="alt tag"></p>
+
+<h1>
+<a id="how-to-use-it" class="anchor" href="#how-to-use-it" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HOW TO USE IT</h1>
+
+<p>You need automated tests (unless you want to get test coverage for manual ones) and web application you are about to test.</p>
+
+<p>To start working with TECO run pip install requirements in the project root
+and then create new database by running create_database.py script (/dashboard). </p>
+
+<h3>
+<a id="javascript-project" class="anchor" href="#javascript-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>JAVASCRIPT PROJECT</h3>
+
+<p>[info] suitable for not-minified javascript files that contain only your team's code (not webpacked etc.) It can be compiled angular app or pure js project- doesn't matter.</p>
+
+<ul>
+<li>backup your project before start. </li>
+<li>make sure your javascript is not minified or compressed in any way</li>
+<li>find self.REGEX_LIST in instrument2.py and modify regex collection if you need. Typical regex list for javascript files:</li>
+</ul>
+
+<pre><code>self.REGEX_LIST=[
+            r'function[\w]*\([\w,\s]*\) \{', 
+            r'function [\w]+\([\w,\s]*\) \{', 
+            r'function [\w]+ \([\w,\s]*\) \{', 
+            r'function [\w]+\([\w,\s]*\)[\n]', 
+            r'[\w]+.prototype.[\w]+[\s]*=[\s]*function[\s]*\(\)[\s]*{', 
+            r'[\w]+.prototype.[\w]+[\s]*=[\s]*function[\s]*\([\w,\s]*\)[\s]*{',
+            r'[\w]+.[\w]+[\s]*=[\s]*function[\s]+\([\w\s,]*\)[\s]*{']
+</code></pre>
+
+<ul>
+<li>find config.json and update:</li>
+</ul>
+
+<pre><code>indexPath*
+web_app_root*
+JS_TO_INSTRUMENT*
+TEMPLATES_TO_INSTRUMENT
+ROUTES_TO_INSTRUMENT
+MODULES
+</code></pre>
+
+<p>*required</p>
+
+<ul>
+<li>INJECT_MODE should be 0</li>
+<li>start server from /dashboard by running:</li>
+</ul>
+
+<pre><code>python instrument_server.py
+</code></pre>
+
+<p>or execute</p>
+
+<pre><code>run_api_windows.bat
+</code></pre>
+
+<ul>
+<li>start instrument2.py and pass config.json path as command line argument</li>
+<li>you should get couple of '200's in the output console before it finishes</li>
+<li>check your project's files, should be appended by instrumentation code already plus instrument.js should be inside your app's root and referenced in index.html</li>
+<li>go to localhost:5000/dashboard to view dashboard</li>
+<li>create new test session by clicking the dashboard button or calling api request:</li>
+</ul>
+
+<pre><code>http://localhost:5000/set_test_session_start?test_session_name=firstSession
+</code></pre>
+
+<ul>
+<li>in your tests, 2 tweaks should be done
+A. make 'set_current_test' request in each test's setup code:</li>
+</ul>
+
+<pre><code>http://localhost:5000/set_current_test?name=click%on%something%else&amp;test_id=t1-t2-t3-chrome&amp;touched_module=dashboard
+</code></pre>
+
+<ul>
+<li>params are:
+[name] - test name, nvarchar
+[test_id] -test id, nvarchar
+[touched_module] - module it touches, for example dashboard, nvarchar</li>
+<li>B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend</li>
+<li>you should see your test session in localhost:5000/dashboard</li>
+<li>click on it to view report; </li>
+<li>now it's a good time to start your tests</li>
+<li>if test session was not ended, there will be a red bar at the top saying it's live</li>
+<li>you should see instrumentation data changing in real time</li>
+<li>end test session after you are done by calling</li>
+</ul>
+
+<pre><code>http://localhost:5000/set_test_session_end
+</code></pre>
+
+<ul>
+<li>you now have test coverage report</li>
+</ul>
+
+<h3>
+<a id="typescript-project" class="anchor" href="#typescript-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TYPESCRIPT PROJECT</h3>
+
+<p>[info] suitable if you use webpack to compile your project and your output javascript contains not only your team's code but also third party code. This makes it hard
+to do a test coverage because python script that injects instrumentCode function can't tell which code is which and doing it manually can be impossible task for large
+files. 
+So, you can inject instrumentCode function directly into typescript code of yours (there is typescript module included in this project) and instrument only
+code that comes from your team. After injection, you compile your project as usual but with instrumentCode function injected where needed.</p>
+
+<ul>
+<li>backup your project before start.</li>
+<li>find self.REGEX_LIST in instrument2.py and modify regex collection if you need. Tested regex for typescript files:</li>
+</ul>
+
+<pre><code>self.REGEX_LIST=[
+            r'[\w]+[\s]*\([\w\s:,]*\)[\s]*{',
+            r'[\w]+[\s]*\([\w\s,:?]*\)[\s]*:[\s]*[\w\&lt;\&gt;\[\]]+[\s]*{'
+            ]
+</code></pre>
+
+<ul>
+<li>find config.json and update:</li>
+</ul>
+
+<pre><code>indexPath*
+web_app_root*
+ROUTES_TO_INSTRUMENT
+SOURCE_TO_INSTRUMENT*
+SOURCE_ABSOLUTE_PATH*
+INSTRUMENTER_INSTANTIATE_FILE*
+MODULES
+</code></pre>
+
+<p>*required</p>
+
+<ul>
+<li>INJECT_MODE should be 1</li>
+<li>start server from /dashboard by running:</li>
+</ul>
+
+<pre><code>python instrument_server.py
+</code></pre>
+
+<p>or execute</p>
+
+<pre><code>run_api_windows.bat
+</code></pre>
+
+<ul>
+<li>start instrument2.py and pass config.json path as command line argument</li>
+<li>you should get couple of '200's in the output console before it finishes</li>
+<li>check your project's files, should be appended by instrumentation code already plus instrument.js should be inside your app's root and referenced in index.html</li>
+<li>compile your .ts code</li>
+<li>copy instrument.js to output folder (dist)</li>
+<li>go to localhost:5000/dashboard to view dashboard</li>
+<li>create new test session by clicking the dashboard button or calling api request:</li>
+</ul>
+
+<pre><code>http://localhost:5000/set_test_session_start?test_session_name=firstSession
+</code></pre>
+
+<ul>
+<li>in your tests, 2 tweaks should be done
+A. make 'set_current_test' request in each test's setup code:</li>
+</ul>
+
+<pre><code>http://localhost:5000/set_current_test?name=click%on%something%else&amp;test_id=t1-t2-t3-chrome&amp;touched_module=dashboard
+</code></pre>
+
+<ul>
+<li>parameters are:
+[name] - test name, nvarchar
+[test_id] -test id, nvarchar
+[touched_module] - module it touches, for example dashboard, nvarchar</li>
+<li>B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend</li>
+<li>you should see your test session in localhost:5000/dashboard</li>
+<li>click on it to view report; </li>
+<li>now it's a good time to start your tests</li>
+<li>if test session was not ended, there will be a red bar at the top saying it's live</li>
+<li>you should see instrumentation data changing in real time</li>
+<li>end test session after you are done by calling</li>
+</ul>
+
+<pre><code>http://localhost:5000/set_test_session_end
+</code></pre>
+
+<ul>
+<li>you now have test coverage report</li>
+</ul>
+
+<h1>
+<a id="coverage-report-explained" class="anchor" href="#coverage-report-explained" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>COVERAGE REPORT EXPLAINED</h1>
+
+<p><img src="http://msporna.github.io/public/Report-Explained.png" alt="alt tag"></p>
+
+<h2>
+<a id="view-executed-lines" class="anchor" href="#view-executed-lines" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>View executed lines</h2>
+
+<p>While on report page you can click on instrumented file and a popup with its content will be shown. Instrumentation function
+entries that were executed are highlighted so you can easily see what your test triggered and what still needs to be covered.</p>
+
+<p><img src="http://msporna.github.io/public/FilePreview1.PNG" alt="alt tag"></p>
+
+<h1>
+<a id="how-the-injected-code-looks-like" class="anchor" href="#how-the-injected-code-looks-like" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HOW THE INJECTED CODE LOOKS LIKE</h1>
+
+<p><strong>javascript - before</strong></p>
+
+<pre><code>function function1()
+{ 
+    console.log("f1");
+    function3();
+}
+</code></pre>
+
+<p><strong>javascript - after</strong></p>
+
+<pre><code>function function1()
+{ INSTRUMENTER.InstrumentCode("e343fded-aadf-414e-9e46-36095817e052","main.js");
+    console.log("f1");
+    function3();
+}
+</code></pre>
+
+<p><strong>it looks the same in typescript (INSTRUMENTER is instantiated globally).</strong></p>
+
+<p><strong>index.html - before</strong></p>
+
+<pre><code>&lt;script type="text/javascript" src="jquery.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="main.js"&gt;&lt;/script&gt;
+
+&lt;button id="testButton1" onclick="function1()"&gt;Button 1&lt;/button&gt;
+&lt;button id="testButton2" onclick="function2()"&gt;Button 2&lt;/button&gt;
+
+&lt;p&gt;output&lt;/p&gt;:
+&lt;p id="output_paragraph"&gt;&lt;/p&gt;
+
+&lt;a href="about.html"&gt;go to about&lt;/a&gt;
+</code></pre>
+
+<p><strong>index.html - after</strong></p>
+
+<pre><code>
+&lt;script type="text/javascript" src="instrument.js"&gt;&lt;/script&gt;
+&lt;script&gt;var INSTRUMENTER=new jsInstrument("http://localhost:5000","set_test_session_start","set_test_session_end","get_js_to_instrument","send_instrumentation_stats","get_test_session_status");
+INSTRUMENTER.InstrumentCode("ac88a69c-0d3c-425e-85e8-41cec65f08f5","index.html");&lt;/script&gt;
+&lt;script type="text/javascript" src="jquery.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="main.js"&gt;&lt;/script&gt;
+
+&lt;button id="testButton1" onclick="function1()"&gt;Button 1&lt;/button&gt;
+&lt;button id="testButton2" onclick="function2()"&gt;Button 2&lt;/button&gt;
+
+&lt;p&gt;output&lt;/p&gt;:
+&lt;p id="output_paragraph"&gt;&lt;/p&gt;
+
+&lt;a href="about.html"&gt;go to about&lt;/a&gt;
+</code></pre>
+
+<h1>
+<a id="configjson-entries-explained" class="anchor" href="#configjson-entries-explained" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CONFIG.JSON ENTRIES EXPLAINED</h1>
+
+<ul>
+<li>
+<strong>[lines 2-13]</strong> - method names from the API. If API changes those to be updated instead of code</li>
+<li>
+<strong>[instrumentServerURL]</strong> the dashboard runs on :5000 by default, but if you change it, remember to update this entry</li>
+<li>
+<strong>[indexPath]</strong> your index.html</li>
+<li>
+<strong>[web_app_root]</strong> dist folder of your web app, which is served to clients</li>
+<li>
+<strong>[JS_TO_INJECT]</strong> list of js files that are to be copied and injected into your web app's index.html. Instrument.js is a must</li>
+<li>
+<strong>[JS_TO_INSTRUMENT]</strong> list of js files where instrumentCode function is injected</li>
+<li>
+<strong>[TEMPLATES_TOINSTRUMENT]</strong> list of html templates which are being instrumented</li>
+<li>
+<strong>[ROUTES_TO_INSTRUMENT]</strong> list of routes that can be visited in your website. Instrument tool will determine which ones were visited based on data from js instrumentation function</li>
+<li>
+<strong>[SOURCE_TO_INSTRUMENT]</strong> source files like typescript - everything that needs to be compiled into js and shaked before use</li>
+<li>
+<strong>[SOURCE_ABSOLUTE_PATH]</strong> where your source files lie. Fill only if above is filled</li>
+<li>
+<strong>[INSTRUMENTER_INSTANTIATE_FILE]</strong> a source file where instrumenter module will be instantiated globally. Instantiation code will be appended on the bottom of the file. Fill only if inject mode=1</li>
+<li>
+<strong>[INJECT_MODE]</strong> currently only 2 modes are here: 0 (js) and 1 (ts)</li>
+<li>
+<strong>[MODULES]</strong> all modules that your app has. It will be determined what modules were touched by tests and shown in report</li>
+</ul>
+
+<h1>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>EXAMPLE</h1>
+
+<p>I prepared a sample website and robot framework tests for it to showcase the test coverage tool (inject mode 0, not a typescript project)</p>
+
+<p>see readme.txt inside example_app/instructions</p>
+
+<h1>
+<a id="attributions" class="anchor" href="#attributions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ATTRIBUTIONS</h1>
+
+<p>I used following open source project in my project:
+1. Flask (<a href="http://flask.pocoo.org/">http://flask.pocoo.org/</a>)
+2. Chart.js (<a href="http://www.chartjs.org/">http://www.chartjs.org/</a>)
+3. Jquery (<a href="https://jquery.com/">https://jquery.com/</a>)
+4. Bootstrap (<a href="http://getbootstrap.com/">http://getbootstrap.com/</a>)
+5. Timer.js (<a href="https://husa.github.io/timer.js/">https://husa.github.io/timer.js/</a>)
+6. Jquery Datatables (<a href="http://www.datatables.net/">http://www.datatables.net/</a>)</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/msporna">msporna</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

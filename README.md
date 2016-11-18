@@ -46,7 +46,7 @@ After this, you create new test session by calling API function or by using 'sta
 or UI button) after all of the tests are executed. 
  
 After the test session is started, run your tests and each test can, although it's not required, send request to backend with info about current test. Then the test is tied
-to instrumentation data gathered and is useful to view in the report to see test efficiency (if some test touches 0 lines of code, then it's not a good test).
+to instrumentation data gathered and is useful to view in the report to see test efficiency (if some test touches 0 lines of code, then it's not a good test). **Test coverage session should happen only against tests that are passing because if test fails, it breaks execution and functions that it would trigger are never triggered. So my advice is to get your tests to the passing state and then run TECO session to measure the coverage. I wouldn't recommend attaching TECO to regular test execution you start after each build of the app you test in Jenkins. It could simply give wrong results. Just create a separate test set, rigged with TECO and run it when you need to check what's the current coverage, for example when you finish writing tests for a new feature.**
  
 Backend gathers data sent from instrument.js as app code is being triggered by frontend actions performed by the tests. It can be viewed live in the dashboard. 
 InstrumentCode function sits in executable code lines of your app so everytime you do some action on UI, code underneeth is executed along with the instrumentCode function

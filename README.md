@@ -1,8 +1,6 @@
 # WHAT IS THIS?
  
-This is a project I created in my spare time to measure selenium test coverage for web apps. As QA Engineer I currently write automated tests and I needed a tool that instruments javascript and html files. The tool needed to work well with selenium tests (open browser-click through app-close browser).
-There are some code and test coverage tools out there but those are mostly designed for unit tests and I needed one written specifically for QA Engineers that create 
-automated tests. It's Python 2 based.
+This is a code coverage tool that works with end-2-end functional tests like selenium, designed for web apps. As QA Engineer I currently write automated tests and I needed a tool that instruments javascript and html files. It's Python 2 based.
  
 I created a tool that suits my needs and maybe it will someone else's too.
 I named it TECO (from 2 words: TEst and COverage)
@@ -14,19 +12,19 @@ I named it TECO (from 2 words: TEst and COverage)
  
  
 # FEATURES
-- web based dashboard, written in flask
-- API written in flask so it can be easily integrated with any CI tool
-- live test coverage
+- measures code coverage for js,ts and html files (statement coverage)
+- live report updating
 - compatible with automated and manual tests
-- measures test coverage for js,ts and html files
+- automatically injects instrumentation function into JS by using provided REGEX + injects .TS module if you are instrumenting typescript source
 - works with Angular2 (Typescript)
+- web based dashboard for viewing coverage reports, written in flask
+- API written in flask so it can be easily integrated with any CI tool
 - measures visited routes
 - measures modules that were touched by the tests
 - and finally measures efficiency of each test (how many code lines were executed by each test)
 - reports are archived
-- automatically injects instrumentation function into JS by using provided REGEX + injects .TS module if you are instrumenting typescript source
 - easily extensible
-- Browser independent
+- browser independent
  
 
 # DEMO

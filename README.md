@@ -1,6 +1,6 @@
 # WHAT IS THIS?
  
-This is a code coverage tool that works with end-2-end functional tests like selenium, designed for web apps. As QA Engineer I currently write automated tests and I needed a tool that instruments javascript and html files. It's Python 2 based.
+This is a code coverage tool that works with end-2-end functional tests like selenium, designed for web apps. As QA Engineer I currently write automated tests and I needed a tool that instruments javascript and html files. It's Python 2 based. It does not matter what language your tests are written in, the tool is rest api based so communication happens independently. 
  
 I created a tool that suits my needs and maybe it will someone else's too.
 I named it TECO (from 2 words: TEst and COverage)
@@ -15,6 +15,7 @@ I named it TECO (from 2 words: TEst and COverage)
 - measures code coverage for js,ts and html files (statement coverage)
 - live report updating
 - compatible with automated and manual tests
+- language independent - your tests can be written in anything
 - automatically injects instrumentation function into JS by using provided REGEX + injects .TS module if you are instrumenting typescript source
 - works with Angular2 (Typescript)
 - web based dashboard for viewing coverage reports, written in flask

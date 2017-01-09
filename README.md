@@ -16,7 +16,8 @@ I named it TECO (from 2 words: TEst and COverage)
 - live report updating
 - compatible with automated and manual tests
 - language independent - your tests can be written in anything
-- automatically injects instrumentation function into JS by using provided REGEX + injects .TS module if you are instrumenting typescript source
+- automatically injects instrumentation function into JS by using provided REGEX 
+- it injects a typescript module if you are instrumenting typescript source
 - works with Angular2 (Typescript)
 - web based dashboard for viewing coverage reports, written in flask
 - API written in flask so it can be easily integrated with any CI tool

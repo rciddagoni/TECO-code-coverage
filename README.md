@@ -28,7 +28,8 @@ I named it TECO (from 2 words: TEst and COverage).
  
 
 # DEMO
-<iframe width="560" height="315" src="https://www.youtube.com/embed/xvQJpqtbM0g" frameborder="0" allowfullscreen></iframe>
+<p>I recorded a short demo presenting TECO tool in action:
+ <a href="https://youtu.be/xvQJpqtbM0g">TECO coverage tool demo</a></p>
 
 
 

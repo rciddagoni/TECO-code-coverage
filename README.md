@@ -1,11 +1,9 @@
 # WHAT IS THIS?
  
-This is a code coverage tool that works with end-2-end functional tests like selenium, designed for web apps. As QA Engineer I currently write automated tests and I needed a tool that instruments javascript and html files. It's Python 2 based. It does not matter what language your tests are written in, the tool is rest api based so communication happens independently. 
+This is a code coverage tool that works with end-2-end functional tests like selenium, designed for web apps. It does not matter what language your tests are written in, the tool is rest api based (Flask) so communication happens independently. 
  
 I created a tool that suits my needs and maybe it will someone else's too.
-I named it TECO (from 2 words: TEst and COverage)
- 
- Below is a GIF presenting it in action, left pane is TECO and righ pane is a sample website and I click its buttons. TECO shows coverage in real time.
+I named it TECO (from 2 words: TEst and COverage).
  
  ![alt tag](http://msporna.github.io/public/teco_gif_1.gif.gif)
  
@@ -30,27 +28,20 @@ I named it TECO (from 2 words: TEst and COverage)
  
 
 # DEMO
- I recorded a short demo presenting TECO tool in action:
- [TECO coverage tool demo](https://youtu.be/xvQJpqtbM0g)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/xvQJpqtbM0g" frameborder="0" allowfullscreen></iframe>
+
 
 
 # HOW IT WORKS
-It contains javascript file instrument.js that contains instrumentation function. The file is injected into each javascript/typescript/html file specified in config
-and instrumentCode function is injected into each executable line of the source you wish. By design, it is injected into functions but as injection is based on REGEX
-you can inject it anywhere you want or simply paste the instrumentation function manually into your source.
+TECO contains javascript file called instrument.js that has an instrumentation function. This js file is injected into each javascript/typescript/html file of tested web app specified in config. The instrumentation function sits in executable code and once triggered, it sends info to TECO backend about which line was just executed. By design, it is injected into functions but as injection is based on REGEX you can inject it anywhere you want or simply paste the instrumentation function manually into your source.
  
-All of the above happens by running instrument2 python script which also registers few things to backend such as files that you want to instrument, routes
-that app has, modules that app has etc.
+All of the above happens by running *instrument2* python script which also registers few things to backend such as files that you want to instrument, routes that app has, modules that app has etc.
  
-After this, you create new test session by calling API function or by using 'start new session' button in the dashboard. Test session must be ended manually (via API call
-or UI button) after all of the tests are executed. 
+When your web app is bootstrapped, it's time create new test session in TECO dashboard by calling API function or by using 'start new session' button on UI. Test session must be ended manually (via API call or UI button) after all of the tests are executed. 
  
-After the test session is started, run your tests and each test can, although it's not required, send request to backend with info about current test. Then the test is tied
-to instrumentation data gathered and is useful to view in the report to see test efficiency (if some test touches 0 lines of code, then it's not a good test). **Test coverage session should happen only against tests that are passing because if test fails, it breaks execution and functions that it would trigger are never triggered. So my advice is to get your tests to the passing state and then run TECO session to measure the coverage. I wouldn't recommend attaching TECO to regular test execution you start after each build of the app you test in Jenkins. It could simply give wrong results. Just create a separate test set, rigged with TECO and run it when you need to check what's the current coverage, for example when you finish writing tests for a new feature.**
+ **Test coverage session should happen only against tests that are passing because if test fails, it breaks execution and functions that it would trigger are never triggered. So my advice is to get your tests to the passing state and then run TECO session to measure the coverage. I wouldn't recommend attaching TECO to regular test execution you start after each build of the app you test in CI. It might simply give wrong results. Just create a separate test set, rigged with TECO and run it when you need to check what's the current coverage, for example when you finish writing tests for a new feature.**
  
-Backend gathers data sent from instrument.js as app code is being triggered by frontend actions performed by the tests. It can be viewed live in the dashboard. 
-InstrumentCode function sits in executable code lines of your app so everytime you do some action on UI, code underneeth is executed along with the instrumentCode function
-that sends that fact to the backend.
+Backend gathers data sent from instrument.js as app code is being triggered by frontend actions performed by the tests. It can be viewed live in the dashboard. InstrumentCode() function sits in executable code lines of your app so everytime you do some action on UI, code underneeth is executed along with the instrumentCode() function of TECO.
  
 When tests are over, test session ends and we have a test coverage report to analyze.
  
@@ -58,16 +49,12 @@ When tests are over, test session ends and we have a test coverage report to ana
  
 # HOW TO USE IT
  
-You need automated tests (unless you want to get test coverage for manual ones) and web application you are about to test.
- 
-To start working with TECO run pip install requirements in the project root
-and then create new database by running create_database.py script (/dashboard). 
- 
+ 1. Install the requirements by running pip install -r requirements.txt
+ 2. Create a new database by running 'create_database.py' script located in /dashboard folder
+ 3. Next steps depend from type of your web application. TECO supports web projets written in pure javascript or in typescript (like angular2 apps). Setting it up differs slightly for both.
  
 ### JAVASCRIPT PROJECT
-[info] suitable for not-minified javascript files that contain only your team's code (not webpacked etc.) It can be compiled angular app or pure js project- doesn't matter.
- 
- 
+
  
 - backup your project before start. 
 - make sure your javascript is not minified or compressed in any way
@@ -136,14 +123,7 @@ http://localhost:5000/set_test_session_end
  
  
 ### TYPESCRIPT PROJECT
-[info] suitable if you use webpack to compile your project and your output javascript contains not only your team's code but also third party code. This makes it hard
-to do a test coverage because python script that injects instrumentCode function can't tell which code is which and doing it manually can be impossible task for large
-files. 
-So, you can inject instrumentCode function directly into typescript code of yours (there is typescript module included in this project) and instrument only
-code that comes from your team. After injection, you compile your project as usual but with instrumentCode function injected where needed.
- 
- 
- 
+
  
 - backup your project before start.
 - find self.REGEX_LIST in instrument2.py and modify regex collection if you need. Tested regex for typescript files:
@@ -194,7 +174,9 @@ http://localhost:5000/set_current_test?name=click%on%something%else&test_id=t1-t
 [name] - test name, nvarchar
 [test_id] -test id, nvarchar
 [touched_module] - module it touches, for example dashboard, nvarchar
-- B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend
+
+B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend
+
 - you should see your test session in localhost:5000/dashboard
 - click on it to view report; 
 - now it's a good time to start your tests
@@ -297,11 +279,4 @@ see readme.txt inside example_app/instructions
  
  
  
-# ATTRIBUTIONS
-I used following open source project in my project:
-1. Flask (http://flask.pocoo.org/)
-2. Chart.js (http://www.chartjs.org/)
-3. Jquery (https://jquery.com/)
-4. Bootstrap (http://getbootstrap.com/)
-5. Timer.js (https://husa.github.io/timer.js/)
-6. Jquery Datatables (http://www.datatables.net/)
+

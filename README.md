@@ -2,8 +2,7 @@
  
 This is a code coverage tool that works with end-2-end functional tests like selenium, designed for web apps. It does not matter what language your tests are written in, the tool is rest api based (Flask) so communication happens independently. 
  
-I created a tool that suits my needs and maybe it will someone else's too.
-I named it TECO (from 2 words: TEst and COverage).
+The tool is aimed for QA engineers who write automated tests and want to see what % of the tested app their tests cover.
  
  ![alt tag](http://msporna.github.io/public/teco_gif_1.gif.gif)
  

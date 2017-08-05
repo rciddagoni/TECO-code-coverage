@@ -62,7 +62,7 @@ Next steps depend from type of your web application. TECO supports web projets w
  
 - backup your project before start. 
 - make sure your javascript is not minified or compressed in any way
-- find self.REGEX_LIST in instrument2.py and modify regex collection if you need. Typical regex list for javascript files:
+- find self.REGEX_LIST in instrument2.py and modify regex collection if you need. Typical regex list for javascript files (that finds javascript functions):
 ```
 self.REGEX_LIST=[
             r'function[\w]*\([\w,\s]*\) \{', 
@@ -76,17 +76,17 @@ self.REGEX_LIST=[
 
 - find config.json and update:
 ```
-indexPath*
-web_app_root*
-JS_TO_INSTRUMENT*
-TEMPLATES_TO_INSTRUMENT
-ROUTES_TO_INSTRUMENT
-MODULES
+indexPath* [path to index.html of your app]
+web_app_root* 
+JS_TO_INSTRUMENT* [absolute path to the files]
+TEMPLATES_TO_INSTRUMENT [absolute path to the files]
+ROUTES_TO_INSTRUMENT [full url]
+MODULES 
 ```
 *required
  
 - INJECT_MODE should be 0
-- start server from /dashboard by running:
+- start server from /dashboard folder by running:
 ```
 python instrument_server.py
 ```
@@ -94,11 +94,11 @@ or execute
 ```
 run_api_windows.bat
 ```
-- start instrument2.py and pass config.json path as command line argument
+- run python instrument2.py and pass config.json path as command line argument
 - you should get couple of '200's in the output console before it finishes
 - check your project's files, should be appended by instrumentation code already plus instrument.js should be inside your app's root and referenced in index.html
-- go to localhost:5000/dashboard to view dashboard
-- create new test session by clicking the dashboard button or calling api request:
+- open a browser and go to localhost:5000/dashboard to view dashboard
+- create new test session by clicking the new session dashboard button or calling api request directly:
 ```
 http://localhost:5000/set_test_session_start?test_session_name=firstSession
 ```
@@ -111,17 +111,20 @@ http://localhost:5000/set_current_test?name=click%on%something%else&test_id=t1-t
 [name] - test name, nvarchar
 [test_id] -test id, nvarchar
 [touched_module] - module it touches, for example dashboard, nvarchar
-- B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend
+- B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend-in the future I might replace it with some additional api endpoint like /checkIfCanFinishTest to avoid nasty sleeping
 - you should see your test session in localhost:5000/dashboard
 - click on it to view report; 
-- now it's a good time to start your tests
-- if test session was not ended, there will be a red bar at the top saying it's live
-- you should see instrumentation data changing in real time
-- end test session after you are done by calling
+
+
+- SETUP IS DONE
+
++ if test session was not ended, there will be a red bar at the top saying it's live
++ you should see instrumentation data changing in real time
++ end test session after you are done by calling below endpoint or click stop button while on session's page
 ```
 http://localhost:5000/set_test_session_end
 ```
-- you now have test coverage report
+
  
  
  
@@ -140,12 +143,12 @@ self.REGEX_LIST=[
 
 - find config.json and update:
 ```
-indexPath*
+indexPath* [path to index.html of your app]
 web_app_root*
 ROUTES_TO_INSTRUMENT
-SOURCE_TO_INSTRUMENT*
+SOURCE_TO_INSTRUMENT* [absolute path]
 SOURCE_ABSOLUTE_PATH*
-INSTRUMENTER_INSTANTIATE_FILE*
+INSTRUMENTER_INSTANTIATE_FILE* [absolute path]
 MODULES
 ```
 *required
@@ -159,13 +162,13 @@ or execute
 ```
 run_api_windows.bat
 ```
-- start instrument2.py and pass config.json path as command line argument
+- run python instrument2.py and pass config.json path as command line argument
 - you should get couple of '200's in the output console before it finishes
 - check your project's files, should be appended by instrumentation code already plus instrument.js should be inside your app's root and referenced in index.html
 - compile your .ts code
-- copy instrument.js to output folder (dist)
+- copy instrument.js to output folder (dist) of your compliation
 - go to localhost:5000/dashboard to view dashboard
-- create new test session by clicking the dashboard button or calling api request:
+- create new test session by clicking the new session dashboard button or calling api request directly:
 ```
 http://localhost:5000/set_test_session_start?test_session_name=firstSession
 ```
@@ -179,18 +182,20 @@ http://localhost:5000/set_current_test?name=click%on%something%else&test_id=t1-t
 [test_id] -test id, nvarchar
 [touched_module] - module it touches, for example dashboard, nvarchar
 
-B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend
+- B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend-in the future I might replace it with some additional api endpoint like /checkIfCanFinishTest to avoid nasty sleeping
 
 - you should see your test session in localhost:5000/dashboard
 - click on it to view report; 
-- now it's a good time to start your tests
-- if test session was not ended, there will be a red bar at the top saying it's live
-- you should see instrumentation data changing in real time
-- end test session after you are done by calling
+
+
+- SETUP IS DONE
+
++ if test session was not ended, there will be a red bar at the top saying it's live
++ you should see instrumentation data changing in real time
++ end test session after you are done by calling below endpoint or click stop button while on session's page
 ```
 http://localhost:5000/set_test_session_end
 ```
-- you now have test coverage report
  
  
  
@@ -265,13 +270,13 @@ INSTRUMENTER.InstrumentCode("ac88a69c-0d3c-425e-85e8-41cec65f08f5","index.html")
 - **[web_app_root]** dist folder of your web app, which is served to clients
 - **[JS_TO_INJECT]** list of js files that are to be copied and injected into your web app's index.html. Instrument.js is a must
 - **[JS_TO_INSTRUMENT]** list of js files where instrumentCode function is injected
-- **[TEMPLATES_TOINSTRUMENT]** list of html templates which are being instrumented
+- **[TEMPLATES_TO_INSTRUMENT]** list of html templates which are being instrumented
 - **[ROUTES_TO_INSTRUMENT]** list of routes that can be visited in your website. Instrument tool will determine which ones were visited based on data from js instrumentation function
 - **[SOURCE_TO_INSTRUMENT]** source files like typescript - everything that needs to be compiled into js and shaked before use
 - **[SOURCE_ABSOLUTE_PATH]** where your source files lie. Fill only if above is filled
 - **[INSTRUMENTER_INSTANTIATE_FILE]** a source file where instrumenter module will be instantiated globally. Instantiation code will be appended on the bottom of the file. Fill only if inject mode=1
 - **[INJECT_MODE]** currently only 2 modes are here: 0 (js) and 1 (ts)
-- **[MODULES]** all modules that your app has. It will be determined what modules were touched by tests and shown in report
+- **[MODULES]** all modules that your app has. Those are just strings you make up. It will be determined what modules were touched by tests and shown in report. Each test setup makes call to api:set_current_test and one of params is a module that the test touches
  
  
  

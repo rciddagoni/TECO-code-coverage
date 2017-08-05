@@ -40,8 +40,6 @@ All of the above happens by running *instrument2* python script which also regis
  
 When your web app is bootstrapped, it's time create new test session in TECO dashboard by calling API function or by using 'start new session' button on UI. Test session must be ended manually (via API call or UI button) after all of the tests are executed. 
  
- **Test coverage session should happen only against tests that are passing because if test fails, it breaks execution and functions that it would trigger are never triggered. So my advice is to get your tests to the passing state and then run TECO session to measure the coverage. I wouldn't recommend attaching TECO to regular test execution you start after each build of the app you test in CI. It might simply give wrong results. Just create a separate test set, rigged with TECO and run it when you need to check what's the current coverage, for example when you finish writing tests for a new feature.**
- 
 Backend gathers data sent from instrument.js as app code is being triggered by frontend actions performed by the tests. It can be viewed live in the dashboard. InstrumentCode() function sits in executable code lines of your app so everytime you do some action on UI, code underneeth is executed along with the instrumentCode() function of TECO.
  
 When tests are over, test session ends and we have a test coverage report to analyze.
@@ -49,10 +47,15 @@ When tests are over, test session ends and we have a test coverage report to ana
  ![alt tag](http://msporna.github.io/public/teco_diagram.png)
  
 # HOW TO USE IT
+
+### BEFORE YOU START - ONE TIME ONLY:
  
  1. Install the requirements by running pip install -r requirements.txt
  2. Create a new database by running 'create_database.py' script located in /dashboard folder
- 3. Next steps depend from type of your web application. TECO supports web projets written in pure javascript or in typescript (like angular2 apps). Setting it up differs slightly for both.
+ 
+ 
+ 
+Next steps depend from type of your web application. TECO supports web projets written in pure javascript and in typescript (like angular2 apps). Setting one differs sligthly from another.
  
 ### JAVASCRIPT PROJECT
 

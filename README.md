@@ -48,6 +48,8 @@ When tests are over, test session ends and we have a test coverage report to ana
  
 # HOW TO USE IT
 
+Note that gathering coverage makes more sense when the measured tests are in the passing state - then you are sure each step executes. If test is supposed to touch 3 functions of the web app code for example and the test fails on step 1 before those 3 functions are triggered, then coverage will show there is no coverage for those functions. It might be not true.
+
 ### BEFORE YOU START - ONE TIME ONLY:
  
  1. Install the requirements by running pip install -r requirements.txt

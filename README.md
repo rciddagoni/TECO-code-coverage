@@ -161,6 +161,7 @@ http://localhost:5000/set_current_test?name=click%on%something%else&test_id=t1-t
 [name] - test name, nvarchar
 [test_id] -test id, nvarchar
 [touched_module] - module it touches, for example dashboard, nvarchar
+
 B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend-in the future I might replace it with some additional api endpoint like /checkIfCanFinishTest to avoid nasty sleeping
 4. you should see your test session in localhost:5000/dashboard after it was created
 5. click on it to view report; 

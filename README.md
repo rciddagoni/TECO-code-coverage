@@ -1,6 +1,6 @@
 # WHAT IS THIS?
  
-This is a code coverage tool that works with end-2-end functional tests like selenium, designed for web apps. It does not matter what language your tests are written in, the tool is rest api based (Flask) so communication happens independently. 
+This is a code coverage tool that works with end-2-end functional tests like selenium, designed for web apps (tested with simple html/javascript and typescript angular app). It does not matter what language your tests are written in, the tool is rest api based (Flask) so communication happens independently. 
  
 The tool is aimed for QA engineers who write automated tests and want to see what % of the tested app their tests cover.
  
@@ -49,6 +49,8 @@ When tests are over, test session ends and we have a test coverage report to ana
 
 Note that gathering coverage makes more sense when the measured tests are in the passing state - then you are sure each step executes. If test is supposed to touch 3 functions of the web app code for example and the test fails on step 1 before those 3 functions are triggered, then coverage will show there is no coverage for those functions. It might be not true.
 
+## 1. SETUP YOUR WEB APPLICATION THAT IS BEING TESTED BY YOUR AUTOMATED TESTS
+
 ### BEFORE YOU START - ONE TIME ONLY:
  
  1. Install the requirements by running pip install -r requirements.txt
@@ -61,9 +63,9 @@ Next steps depend from type of your web application. TECO supports web projets w
 ### JAVASCRIPT PROJECT
 
  
-- backup your project before start. 
-- make sure your javascript is not minified or compressed in any way
-- find self.REGEX_LIST in instrument2.py and modify regex collection if you need. Typical regex list for javascript files (that finds javascript functions):
+1. backup your project before start. 
+2. make sure your javascript is not minified or compressed in any way
+3. find self.REGEX_LIST in instrument2.py and modify regex collection if you need. Typical regex list for javascript files (that finds javascript functions):
 ```
 self.REGEX_LIST=[
             r'function[\w]*\([\w,\s]*\) \{', 
@@ -75,7 +77,7 @@ self.REGEX_LIST=[
             r'[\w]+.[\w]+[\s]*=[\s]*function[\s]+\([\w\s,]*\)[\s]*{']
 ```
 
-- find config.json and update:
+4. find config.json and update:
 ```
 indexPath* [path to index.html of your app]
 web_app_root* 
@@ -86,8 +88,9 @@ MODULES
 ```
 *required
  
-- INJECT_MODE should be 0
-- start server from /dashboard folder by running:
+5. INJECT_MODE should be 0
+
+6. start server from /dashboard folder by running:
 ```
 python instrument_server.py
 ```
@@ -95,36 +98,9 @@ or execute
 ```
 run_api_windows.bat
 ```
-- run python instrument2.py and pass config.json path as command line argument
-- you should get couple of '200's in the output console before it finishes
-- check your project's files, should be appended by instrumentation code already plus instrument.js should be inside your app's root and referenced in index.html
-- open a browser and go to localhost:5000/dashboard to view dashboard
-- create new test session by clicking the new session dashboard button or calling api request directly:
-```
-http://localhost:5000/set_test_session_start?test_session_name=firstSession
-```
-- in your tests, 2 tweaks should be done
-A. make 'set_current_test' request in each test's setup code:
-```
-http://localhost:5000/set_current_test?name=click%on%something%else&test_id=t1-t2-t3-chrome&touched_module=dashboard
-```
-- params are:
-[name] - test name, nvarchar
-[test_id] -test id, nvarchar
-[touched_module] - module it touches, for example dashboard, nvarchar
-- B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend-in the future I might replace it with some additional api endpoint like /checkIfCanFinishTest to avoid nasty sleeping
-- you should see your test session in localhost:5000/dashboard
-- click on it to view report; 
-
-
-- SETUP IS DONE
-
-+ if test session was not ended, there will be a red bar at the top saying it's live
-+ you should see instrumentation data changing in real time
-+ end test session after you are done by calling below endpoint or click stop button while on session's page
-```
-http://localhost:5000/set_test_session_end
-```
+7. run python instrument2.py and pass config.json path as command line argument
+8. you should get couple of '200's in the output console before it finishes
+9. check your web application's files, should be appended by instrumentation code already plus instrument.js should be inside your app's root and referenced in index.html
 
  
  
@@ -133,8 +109,8 @@ http://localhost:5000/set_test_session_end
 ### TYPESCRIPT PROJECT
 
  
-- backup your project before start.
-- find self.REGEX_LIST in instrument2.py and modify regex collection if you need. Tested regex for typescript files:
+1. backup your project before start.
+2. find self.REGEX_LIST in instrument2.py and modify regex collection if you need. Tested regex for typescript files:
 ```
 self.REGEX_LIST=[
             r'[\w]+[\s]*\([\w\s:,]*\)[\s]*{',
@@ -142,7 +118,7 @@ self.REGEX_LIST=[
             ]
 ```
 
-- find config.json and update:
+3. find config.json and update:
 ```
 indexPath* [path to index.html of your app]
 web_app_root*
@@ -154,8 +130,8 @@ MODULES
 ```
 *required
  
-- INJECT_MODE should be 1
-- start server from /dashboard by running:
+4. INJECT_MODE should be 1
+5. start server from /dashboard by running:
 ```
 python instrument_server.py
 ```
@@ -163,40 +139,42 @@ or execute
 ```
 run_api_windows.bat
 ```
-- run python instrument2.py and pass config.json path as command line argument
-- you should get couple of '200's in the output console before it finishes
-- check your project's files, should be appended by instrumentation code already plus instrument.js should be inside your app's root and referenced in index.html
-- compile your .ts code
-- copy instrument.js to output folder (dist) of your compliation
-- go to localhost:5000/dashboard to view dashboard
-- create new test session by clicking the new session dashboard button or calling api request directly:
+6. run python instrument2.py and pass config.json path as command line argument
+7. you should get couple of '200's in the output console before it finishes
+8, check your project's files, should be appended by instrumentation code already plus instrument.js should be inside your app's root and referenced in index.html
+9. compile your .ts code
+10. copy instrument.js to output folder (dist) of your compliation
+
+### SETUP YOUR AUTOMATED TESTS 
+
+1. open a browser and go to localhost:5000/dashboard to view dashboard
+2. create new test session by clicking the new session dashboard button or calling api request directly:
 ```
 http://localhost:5000/set_test_session_start?test_session_name=firstSession
 ```
-- in your tests, 2 tweaks should be done
-A. make 'set_current_test' request in each test's setup code:
+3. in your tests, 2 tweaks should be done, A and B:
+A. make 'set_current_test' request in each test's setup code, for example:
 ```
 http://localhost:5000/set_current_test?name=click%on%something%else&test_id=t1-t2-t3-chrome&touched_module=dashboard
 ```
-- parameters are:
+- params are:
 [name] - test name, nvarchar
 [test_id] -test id, nvarchar
 [touched_module] - module it touches, for example dashboard, nvarchar
+B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend-in the future I might replace it with some additional api endpoint like /checkIfCanFinishTest to avoid nasty sleeping
+4. you should see your test session in localhost:5000/dashboard after it was created
+5. click on it to view report; 
 
-- B. in your test teardown, sleep for 3-4 seconds before closing browser to give instrumentCode time to finish sending instrumentation data to backend-in the future I might replace it with some additional api endpoint like /checkIfCanFinishTest to avoid nasty sleeping
+6. SETUP IS DONE
 
-- you should see your test session in localhost:5000/dashboard
-- click on it to view report; 
-
-
-- SETUP IS DONE
-
+while on the report page:
 + if test session was not ended, there will be a red bar at the top saying it's live
 + you should see instrumentation data changing in real time
 + end test session after you are done by calling below endpoint or click stop button while on session's page
 ```
 http://localhost:5000/set_test_session_end
 ```
+
  
  
  

@@ -1,0 +1,46 @@
+{
+  "startSessionAPIMethod": "set_test_session_start",
+  "getJStoInstrumentAPIMethod": "get_js_to_instrument",
+  "getInstrumentFunctionNameAPIMethod": "get_instrument_function_name",
+  "endSessionAPIMethod": "set_test_session_end",
+  "setDetectedFilesAPIMethod": "set_detected_files",
+  "setConfigValuesAPIMethod": "set_config_values",
+  "sendInstrumentationStatsAPIMethod": "send_instrumentation_stats",
+  "getTestSessionStatusAPIMethod": "get_test_session_status",
+  "setExecutableLineCountAPIMethod": "set_executable_lines_count_for_file",
+  "setRoutesAPIMethod": "set_routes",
+  "setModulesAPIMethod": "set_modules",
+  "setFileContentAPIMethod":"set_file_content",
+  "instrumentServerURL": "http://localhost:5000",
+  "indexPath": "example_app\\index.html",
+  "web_app_root": "example_app\\",
+  "JS_TO_INJECT": [
+    "inject_js\\instrument.js"
+  ],
+  "JS_TO_INSTRUMENT": [
+    "example_app\\main.js"
+
+  ],
+  "TEMPLATES_TO_INSTRUMENT": [
+    "example_app\\about.html"
+
+  ],
+  "ROUTES_TO_INSTRUMENT": [
+    "http://localhost:8787/",
+    "http://localhost:8787/about.html"
+
+  ],
+  "SOURCE_TO_INSTRUMENT": [
+ 
+
+  ],
+  "SOURCE_ABSOLUTE_PATH": "",
+  "INSTRUMENTER_INSTANTIATE_FILE": "",
+  "INJECT_MODE": 0,
+  "MODULES": [
+    "main.js",
+    "navigation"
+  ]
+    
+    
+}

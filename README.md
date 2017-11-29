@@ -12,10 +12,10 @@ The tool is aimed for QA engineers who write automated tests and want to see wha
 - measures code coverage for js,ts and html files (statement coverage)
 - live report updating
 - compatible with automated and manual tests
-- language independent - your tests can be written in anything
+- language independent - your tests can be written in anything from python to java
 - automatically injects instrumentation function into JS by using provided REGEX 
 - it injects a typescript module if you are instrumenting typescript source
-- works with Angular2 (Typescript)
+- supports Angular2 (Typescript)
 - web based dashboard for viewing coverage reports, written in flask
 - API written in flask so it can be easily integrated with any CI tool
 - measures visited routes
@@ -49,7 +49,7 @@ When tests are over, test session ends and we have a test coverage report to ana
 
 Note that gathering coverage makes more sense when the measured tests are in the passing state - then you are sure each step executes. If test is supposed to touch 3 functions of the web app code for example and the test fails on step 1 before those 3 functions are triggered, then coverage will show there is no coverage for those functions. It might be not true.
 
-## 1. SETUP YOUR WEB APPLICATION THAT IS BEING TESTED BY YOUR AUTOMATED TESTS
+## SETUP
 
 ### BEFORE YOU START - ONE TIME ONLY:
  
@@ -60,7 +60,7 @@ Note that gathering coverage makes more sense when the measured tests are in the
  
 Next steps depend from type of your web application. TECO supports web projets written in pure javascript and in typescript (like angular2 apps). Setting one differs sligthly from another.
  
-### JAVASCRIPT PROJECT
+### JAVASCRIPT PROJECT - IF YOU TEST WEB APPLICATION WITH PLAIN JAVASCRIPT WITHOUT FRAMEWORKS
 
  
 1. backup your project before start. 
@@ -106,7 +106,7 @@ run_api_windows.bat
  
  
  
-### TYPESCRIPT PROJECT
+### TYPESCRIPT PROJECT - IF YOU ARE TESTING ANGULAR aPP OR SIMILAR
 
  
 1. backup your project before start.
